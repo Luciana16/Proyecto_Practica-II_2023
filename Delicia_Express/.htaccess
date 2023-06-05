@@ -1,0 +1,8 @@
+# activar el motor de las redirecciones
+RewriteEngine on
+# Verificar si un directorio por el metodo REQUEST_FILENAME es valido
+RewriteCond %{REQUEST_FILENAME} !-d
+# Verificar si un archivo es valido
+RewriteCond %{REQUEST_FILENAME} !-f
+# Almacenar en una variable url, todo lo que contenga despues del archivo index.php
+RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
