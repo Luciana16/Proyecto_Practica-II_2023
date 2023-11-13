@@ -1,16 +1,18 @@
 // Call the dataTables jQuery plugin
-$(document).ready(function(){
+$(document).ready(function() {
 	
 	cargarPedidos();
 	
-	$('#pedidos').DataTable();
-	
+  	$('#pedidos').DataTable();
+  	
+  	//eliminarPedido();
+  	//entregarPedido();
+    
 });
-
 
 async function cargarPedidos(){
 	
-	const request = await fetch('api/pedidos',{
+	const request = await fetch('api/pedido/listar',{
 		
 		method: 'GET',
 		
@@ -20,31 +22,34 @@ async function cargarPedidos(){
 			
 			'Content-Type': 'application/json'
 		}
-	});
+	})
+	
 	const pedidos = await request.json();
 
-	let listadoHTML = '';
+	let listadoHTML = '<tr><th>Id</th><th>Nro. Orden</th><th>Fecha</th><th>Importe</th><th>Tipo de pago</th><th>Estado</th><th>Acciones</th></tr>';
 	
 	for (let pedido of pedidos){
 		
-		let botonEliminar = '<a href="#" onclick="eliminarPedido(' + pedido.id + ')" class="btn btn-danger btn-circle btn-sm"><i class="fas fa-trash"></i></a>';
+		let botonEliminar = '<a href="#" onclick="eliminarPedido(' + pedido.id_carrito + ')" class="btn btn-danger btn-circle"><i class="fas fa-trash"></i></a>';
 		
-		let pedidohtml = '<tr><td>' + pedido.id + '</td><td>' + pedido.orden + '</td><td>' + pedido.fecha + '</td><td>'
-		 + pedido.importe + '</td><td>' + pedido.tipoPago + '</td><td>' + pedido.estado + '</td><td>' + botonEliminar + '</td></tr>';
+		let botonEntregar = '<a href="#" onclick="entregarPedido(\'' + pedido.id_carrito + '\')" class="btn btn-success btn-circle"><i class="fas fa-check"></i></a>';
+				
+		let pedidoshtml = '<tr><td>' + pedido.id + '</td><td>' + pedido.id_orden + '</td><td>' + pedido.fecha + '</td><td>'
+		 + pedido.importe + '</td><td>' + pedido.tipoPago + '</td><td>' + pedido.estado + '</td><td>' + botonEntregar + botonEliminar + '</td></tr>';
 		
-		listadoHTML +=pedidohtml;
+		listadoHTML += pedidoshtml;
 	}
 
 
 	document.querySelector('#pedidos tbody').outerHTML = listadoHTML;
 }
 
-async function eliminarPedido(id){
-	if(!confirm("Desea eliminar el pedido?")){
+async function eliminarPedido(id_carrito){
+	if(!confirm("Se cancelo el Pedido?")){
 		return;
 	}
 	
-	const request = await fetch('api/pedidos/' + id,{
+	const request = await fetch('api/pedido/eliminar/' + id_carrito,{
 		
 		method: 'DELETE',
 		
@@ -58,46 +63,46 @@ async function eliminarPedido(id){
 	location.reload();
 }
 
-// Función botón modificar
-function modificar( event ) {
+async function entregarPedido(id){
+	
+	let estado = prompt('Por favor, escriba el nuevo estado del pedido:');
+	
+	let datos = {};
+	datos.id_orden = id;
+	datos.estado = estado;
+	
+	const request = await fetch('api/pedido/entregar',{
+		
+		method: 'PATCH',
 
-    let row = event.target.closest("tr");
-    let cells = row.cells;
-    // Modificar el contenido de las celdas
-    for (let i = 0; i < cells.length - 1; i++) {
-        let nuevoValor = prompt( `Dato ${ cells[ i ].textContent } por`, cells[ i ].textContent );
-        if ( nuevoValor !== null && nuevoValor !== "" ) {
-            cells[ i ].textContent = nuevoValor;
-        }
-    }
+		headers: {
+
+			'Accept': 'application/json',
+
+			'Content-Type': 'application/json'
+		},
+		body: JSON.stringify(datos)
+	});
+	location.reload();
 }
 
-// Para que se cargue despues de todo el buscador
-window.addEventListener('DOMContentLoaded', function() {
-
-    const buscador = document.querySelector('.buscador');
-
-    // Agregar un evento de escucha al buscador
-    buscador.addEventListener('input', function() {
-        // Obtener el valor ingresado en el buscador
-        const valorBuscador = this.value.toLowerCase();
-
-        // Obtener todas las filas de la tabla
-        const filas = document.querySelectorAll('#pedidos tr');
-
-        // Recorrer todas las filas
-        filas.forEach(function(fila) {
-            // Obtener el texto de la fila
-            const textoFila = fila.textContent.toLowerCase();
-
-            // Verificar si el texto de la fila incluye el valor del buscador
-            if (textoFila.includes(valorBuscador)) {
-                // Si incluye el valor del buscador, mostrar la fila
-                fila.style.display = '';
-            } else {
-                // Si no incluye el valor del buscador, ocultar la fila
-                fila.style.display = 'none';
-            }
-        });
-    });
-});
+function busqueda() {
+  var input, filter, table, tr, td, i, txtValue1, txtValue2;
+  input = document.getElementById("buscador");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("pedidos");
+  tr = table.getElementsByTagName("tr");
+  for (i = 0; i < tr.length; i++) {
+    td1 = tr[i].getElementsByTagName("td")[1]; 
+    td2 = tr[i].getElementsByTagName("td")[5]; 
+    if (td1 && td2) {
+      txtValue1 = td1.textContent || td1.innerText;
+      txtValue2 = td2.textContent || td2.innerText;
+      if (txtValue1.toUpperCase().indexOf(filter) > -1 || txtValue2.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+      } else {
+        tr[i].style.display = "none";
+      }
+    }       
+  }
+}

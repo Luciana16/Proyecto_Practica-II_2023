@@ -3,10 +3,11 @@ package com.practicaProfesionalizante.controlador;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.practicaProfesionalizante.dao.PedidosDao;
@@ -18,17 +19,23 @@ public class PedidosControlador {
 	@Autowired
 	private PedidosDao pedidosDao;
 	
-	@GetMapping("api/pedidos")
+	@GetMapping("api/pedido/listar")
 	public List<Pedidos> getPedidos() {
 		
-	List<Pedidos> user=pedidosDao.getPedidos();
+	List<Pedidos> pedido=pedidosDao.getPedidos();
 	
-	return user;
+	return pedido;
 	}		
 
-	@RequestMapping(value="api/pedidos/{id}", method=RequestMethod.DELETE)
-	public void eliminar(@PathVariable Long id) {
+	@DeleteMapping(value="api/pedido/eliminar/{id_orden}")
+	public void eliminar(@PathVariable Long id_orden) {
 		
-		pedidosDao.eliminar(id);
+		pedidosDao.eliminar(id_orden);
+	}
+
+	@PatchMapping(value="api/pedido/entregar")
+	public void entregar(@RequestBody Pedidos pedido) {
+		
+		pedidosDao.entregar(pedido);
 	}
 }

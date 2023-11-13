@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 @Transactional
 public interface PedidosDao {
 	List <Pedidos> getPedidos();
-	void eliminar(Long id);
+	void eliminar(Long id_carrito);
+	void entregar(Pedidos pedido);
 
 }

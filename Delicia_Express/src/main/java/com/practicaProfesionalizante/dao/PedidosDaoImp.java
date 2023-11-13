@@ -26,10 +26,23 @@ public class PedidosDaoImp implements PedidosDao {
 	}
 
 	@Override
-	public void eliminar(Long id) {
+	public void eliminar(Long id_orden) {
 		
-		Pedidos pedido=entityManager.find(Pedidos.class,id);
+		Pedidos pedido=entityManager.find(Pedidos.class,id_orden);
 		
 		entityManager.remove(pedido);
+	}
+
+	@Override
+	public void entregar(Pedidos pedido) {
+		
+		Long id = pedido.getId_orden();
+		
+		Pedidos carrito=entityManager.find(Pedidos.class,id);
+		
+		carrito.setEstado(pedido.getEstado());
+		
+		entityManager.merge(carrito);
+		
 	}
 }

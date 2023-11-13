@@ -13,12 +13,12 @@ import jakarta.persistence.Table;
 @Table(name = "pedidos")
 public class Pedidos {
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	@Column(name="id")
 	private Long id;
-	@Column(name="orden")
-	private Long orden;
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="id_orden")
+	private Long id_orden;
 	@Column(name="fecha")
 	private Date fecha;
 	@Column(name="importe")
@@ -29,7 +29,7 @@ public class Pedidos {
 	private String estado;
 	
 	public Pedidos(Long ord, Date fech, Float imp, String tP, String est) {
-		this.orden=ord;
+		this.id_orden=ord;
 		this.fecha=fech;
 		this.importe=imp;
 		this.tipoPago=tP;
@@ -39,39 +39,55 @@ public class Pedidos {
 	
 	public Pedidos() {}
 
+	public Pedidos(Long id_orden, String estado) {
+		this.id_orden = id_orden;
+		this.estado = estado;
+	}
+
 	public Long getId() {
 		return id;
 	}
+
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public Long getOrden() {
-		return orden;
+
+	public Long getId_orden() {
+		return id_orden;
 	}
-	public void setOrden(Long orden) {
-		this.orden = orden;
+
+	public void setId_orden(Long id_orden) {
+		this.id_orden = id_orden;
 	}
+
 	public Date getFecha() {
 		return fecha;
 	}
-	public void setApellido(Date fecha) {
+
+	public void setFecha(Date fecha) {
 		this.fecha = fecha;
 	}
+
 	public Float getImporte() {
 		return importe;
 	}
+
 	public void setImporte(Float importe) {
 		this.importe = importe;
 	}
+
 	public String getTipoPago() {
 		return tipoPago;
 	}
-	public void setTelefono(String tipoPago) {
+
+	public void setTipoPago(String tipoPago) {
 		this.tipoPago = tipoPago;
 	}
+
 	public String getEstado() {
 		return estado;
 	}
+
 	public void setEstado(String estado) {
 		this.estado = estado;
 	}
