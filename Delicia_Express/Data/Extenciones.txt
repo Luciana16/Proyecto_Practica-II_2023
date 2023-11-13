@@ -1,6 +1,0 @@
-Las extenciones usadas en este proyecto fueron:
-HAML Boostrap 4,5 Snippets
-Elm Emmet
-Material Icon Theme
-PHP Intelephense
-Prettier - Code formatter
